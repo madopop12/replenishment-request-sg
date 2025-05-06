@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>kintone Record Add</title>
+</head>
+<body>
+  <script>
+    // kintone REST APIエンドポイントとトークン
+    const KINTONE_URL = 'https://tdv7rdhgn6v6.cybozu.com/k/v1/record.json';
+    const API_TOKEN = '2svYp1EMu7MG2wN7mpAGbDwKX7YuYZ6b9qon7Muf';
+
+    // クエリパラメータからbuynameを取得
+    const urlParams = new URLSearchParams(window.location.search);
+    const buynameValue = urlParams.get('buyname') || 'DefaultName'; // buynameがない場合はデフォルト値
+
+    // レコード追加用のリクエストデータ
+    const requestData = {
+      "app": 136, // アプリID（id=1）
+      "record": {
+        "buyname": {
+          "value": buynameValue // クエリパラメータの値を使用
+        }
+      }
+    };
+
+    // Fetch APIを使用してレコードを追加
+    fetch(KINTONE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Cybozu-API-Token': API_TOKEN
+      },
+      body: JSON.stringify(requestData)
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTPエラー: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert(`レコード追加成功！buyname: ${buynameValue}`);
+        console.log(data);
+      })
+      .catch(error => {
+        alert(`エラー: ${error.message}`);
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
